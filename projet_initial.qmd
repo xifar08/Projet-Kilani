@@ -266,7 +266,6 @@ stargazer(voitures, type = "text")
 
 ### Régression linéaire et sortie Latex
 
-
 ```{r}
 #| warning: false
 library(ggthemes)
@@ -276,7 +275,6 @@ voitures %>% ggplot(aes(hp, mpg)) + geom_point(col = "tomato") +
   
   theme_light()
 ```
-
 
 ## Stargazer
 
@@ -301,7 +299,6 @@ data_keno = read.table("keno_202511 6.csv", sep = ";", header = TRUE) %>% select
 data_keno
 ```
 
-
 ```{r}
 library(lubridate)
 pivot_longer(data_keno,
@@ -320,7 +317,6 @@ keno
 ```{r}
 ```
 
-
 ```{r}
 library(scales) # Pour transformer en pourcentage
 nombre_dates <- length(unique(keno$date_de_tirage)) # Calcul nombre de dates distinct
@@ -329,12 +325,12 @@ unique_keno
 ```
 
 A corriger khi-2
+
 ```{r}
 sum(((unique_keno$count - 28.57)^2)/28.57)
 
 chisq.test(x = unique_keno$count, p=rep(16/56, 56))
 ```
-
 
 ```{r}
 pbinom(17, 100, 16/56)
@@ -355,12 +351,12 @@ as_tibble(res) %>% ggplot(aes(value)) + geom_bar(fill = "tomato") + scale_x_cont
 
 ```
 
-Pr(X <= 17)=0.2615, P value est forte donc on conserve l'hypothèse H0 donc aucune boule n'est laisée. Une boule qui est tirée 17 fois ou moins reste très probable.
+Pr(X \<= 17)=0.2615, P value est forte donc on conserve l'hypothèse H0 donc aucune boule n'est laisée. Une boule qui est tirée 17 fois ou moins reste très probable.
 
 ```{r}
 as_tibble(res) %>% filter(value <= 17) %>% summarise(count = n())
 ```
 
-
+ceci est un test
 
 # Références bibliographiques {.unnumbered}
