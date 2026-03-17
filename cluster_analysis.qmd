@@ -316,4 +316,3 @@ fviz_cluster(cluster3_lloyd,
 ```
 
 
-Cecie est un test
