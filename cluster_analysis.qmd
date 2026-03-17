@@ -316,3 +316,6 @@ fviz_cluster(cluster3_lloyd,
 ```
 
 
+### To-do 
+
+Changer le graph des variables
