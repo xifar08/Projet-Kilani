@@ -343,3 +343,5 @@ fviz_cluster(cluster3_lloyd,
 
 modif de test
 
+
+test
