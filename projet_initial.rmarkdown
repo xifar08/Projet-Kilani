@@ -1,0 +1,367 @@
+---
+title: "projet_initial"
+author: "Oscar JOSEPH--GENESLAY"
+toc: true
+number-sections: true
+format: html
+lang: fr
+css: style.css
+editor: visual
+bibliography: references.bib
+# server: shiny
+---
+
+# Introduction
+
+Pour présenter **Quarto**, nous allons nous référer à l'article de @evans2025.
+
+# L'intelligence artificielle et la programmation en R
+
+L'auteur montre un exemple de formule mathématique en Latex. Nous avons reproduit cet exemple (Figure 2, de l'article) ci-dessous.
+
+> Let $Y\sim Bin(n,p)$, where $n\geq1$ and $0\leq p\leq1$, then the probability mass function of $Y$ is given by, $$
+> P(Y=y)=\binom{n}{y}p^y(1-p)^{n-y}, \quad y=0,1, \ldots, n.
+> $$
+>
+> *Source : @evans2025*
+
+# Les chunks R dans quarto
+
+### Loi de Poisson
+
+> Loi discrète : on dit que $X$ suit une loi de poisson de paramètre $\lambda$ \> 0 $$
+> P(X=x)=\frac{\lambda^{x}}{x!}e^{-\lambda},\: x \in \mathbb{N} 
+> $$
+
+On peut utiliser R pour calculer ces probabilités par exemple $\lambda=3$
+
+```{r}
+#| label: Loi de poisson
+#| echo: false
+x = seq(0, 10)
+dx = dpois(x, 3)
+plot(x, dx)
+# Résultat dx : il y a 5% d'avoir la valeur 0 dans la loi de poisson lambda = 3
+```
+
+### Esperance mathématique
+
+```{r echo=FALSE}
+sum(x*dx)
+x%*%dx
+```
+
+On trouve environ 3 qui est le paramètre de $\lambda$
+
+On peut aussi exécuter en ligne les chunks : `r round(sum(x*dx), 3)`.
+
+### Les chunks avec Python
+
+```{python}
+import numpy as np
+```
+
+```{python}
+a = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+a = np.array(a)
+print(np.mean(a))
+```
+
+### Application Shiny
+
+```{r}
+alpha = 1
+lambda = 3
+curve(dgamma(x, alpha, lambda), 0, 10)
+```
+
+Modifiez les valeurs pour observer l'évolution de la courbe.
+
+<!-- # ```{r} -->
+
+<!-- # #| echo: false -->
+
+<!-- # library(shiny) -->
+
+<!-- # library(bslib) -->
+
+<!-- # -->
+
+<!-- # # 1. Interface utilisateur (UI) -->
+
+<!-- # ui <- page_sidebar( -->
+
+<!-- #   theme = bs_theme(version = 5, bootswatch = "flatly"), -->
+
+<!-- #   withMathJax(), -->
+
+<!-- # -->
+
+<!-- #   sidebar = sidebar( -->
+
+<!-- #     title = "Paramètres de la loi", -->
+
+<!-- #     sliderInput("alpha", "$\\alpha$ (Forme) :", min = 0, max = 10, value = 1, step = 0.1), -->
+
+<!-- #     sliderInput("lambda", "$\\lambda$ (Taux) :", min = 0, max = 10, value = 3, step = 0.1) -->
+
+<!-- #   ), -->
+
+<!-- # -->
+
+<!-- #   card( -->
+
+<!-- #     # L'en-tête est maintenant dynamique (défini dans le serveur) -->
+
+<!-- #     card_header(uiOutput("titre_dynamique")), -->
+
+<!-- #     card_body( -->
+
+<!-- #       p("La fonction de densité est donnée par : $$f(x) = \\frac{\\lambda^\\alpha}{\\Gamma(\\alpha)} x^{\\alpha-1} e^{-\\lambda x}$$"), -->
+
+<!-- #       plotOutput("graphique_gamma") -->
+
+<!-- #     ) -->
+
+<!-- #   ) -->
+
+<!-- # ) -->
+
+<!-- # -->
+
+<!-- # # 2. Logique serveur -->
+
+<!-- # server <- function(input, output, session) { -->
+
+<!-- # -->
+
+<!-- #   # Création du titre dynamique avec les bons délimiteurs MathJax -->
+
+<!-- #   output$titre_dynamique <- renderUI({ -->
+
+<!-- #     withMathJax(HTML(paste0( -->
+
+<!-- #       "Exploration de la loi \\( \\Gamma(\\alpha = ", input$alpha, ", \\lambda = ", input$lambda, ") \\)" -->
+
+<!-- #     ))) -->
+
+<!-- #   }) -->
+
+<!-- # -->
+
+<!-- #   output$graphique_gamma <- renderPlot({ -->
+
+<!-- #     par(bg = "#f8f9fa", mar = c(5, 5, 4, 2) + 0.1) # Marge supérieure agrandie pour le titre -->
+
+<!-- # -->
+
+<!-- #     # Préparation du graphique vide -->
+
+<!-- #     plot(0, 0, type = "n", xlim = c(0, 10), -->
+
+<!-- #          ylim = c(0, max(dgamma(seq(0.1, 10, length.out = 100), input$alpha, input$lambda))), -->
+
+<!-- #          xlab = "Valeurs de x", ylab = "Densité f(x)", cex.lab = 1.2, cex.axis = 1.1, -->
+
+<!-- #          # bquote() permet d'interpréter dynamiquement les variables en langage mathématique R -->
+
+<!-- #          main = bquote("Densité pour" ~ alpha == .(input$alpha) ~ "et" ~ lambda == .(input$lambda)) -->
+
+<!-- #     ) -->
+
+<!-- # -->
+
+<!-- #     # Ajout de la grille -->
+
+<!-- #     grid(col = "white", lty = "solid", lwd = 1.5) -->
+
+<!-- # -->
+
+<!-- #     # Tracé de la courbe -->
+
+<!-- #     curve( -->
+
+<!-- #       dgamma(x, shape = input$alpha, rate = input$lambda), -->
+
+<!-- #       from = 0.01, -->
+
+<!-- #       to = 10, -->
+
+<!-- #       col = "#e74c3c", -->
+
+<!-- #       lwd = 3, -->
+
+<!-- #       add = TRUE -->
+
+<!-- #     ) -->
+
+<!-- #   }) -->
+
+<!-- # } -->
+
+<!-- # -->
+
+<!-- # # 3. Lancement de l'application -->
+
+<!-- # shinyApp(ui, server) -->
+
+<!-- # -->
+
+<!-- # -->
+
+<!-- # ``` -->
+
+# L'intelligence et la programmation en R
+
+## Introduction à tidyverse
+
+```{r}
+#| message: false
+library(tidyverse)
+```
+
+### Exemple préliminaire (tibbles & pipe)
+
+```{r}
+voitures = tibble(mtcars) # Le format de données préféré du tidyverse
+# Le pipe il est dans magrittr
+64 %>% log(2) %>% exp()
+```
+
+```{r}
+voitures %>% names() # Avoir les noms de colonnes
+voitures$mpg # Méthodes sans tibble
+# Méthodes avec tibble :
+voitures %>% select(mpg, cyl) %>% summarise(mpg_moyenne = mean(mpg),
+                                            cyl_moyenne = mean(cyl),
+                                            mpg_sd = sd(mpg),
+                                            cyl_sd = sd(cyl)
+                                            ) %>% round(2) -> statdes
+```
+
+```{r}
+library(kableExtra)
+pivot_longer(statdes,
+    cols = everything(),
+    names_to = c("variable", ".value"),
+    names_sep = "_"
+  ) %>% kable(
+    caption = "Statistiques descriptives des véhicules",
+    col.names = c("Variable", "Moyenne", "Écart-type (SD)"),
+    align = "lrr", # Gauche pour le texte, Droite pour les chiffres
+    digits = 2     # Arrondi à 2 décimales
+  ) %>%
+  kable_styling(
+    bootstrap_options = c("striped", "hover", "condensed"),
+    full_width = FALSE,
+    position = "left"
+  ) %>%
+  column_spec(1, bold = TRUE, color = "white", background = "tomato") # Met en valeur les noms de variables
+```
+
+```{r}
+library(stargazer)
+stargazer(voitures, type = "text")
+```
+
+### Régression linéaire et sortie Latex
+
+
+```{r}
+#| warning: false
+library(ggthemes)
+voitures %>% ggplot(aes(hp, mpg)) + geom_point(col = "tomato") + 
+  ggtitle("Consommation en fonction de la puissance")+
+  geom_smooth(method="lm", se=FALSE, size = 0.7)+
+  
+  theme_light()
+```
+
+
+## Stargazer
+
+```{r}
+library(stargazer)
+```
+
+```{r}
+#| results: asis
+model1 = lm(mpg ~ hp, data = voitures)
+stargazer(model1, type = "html")
+```
+
+# Keno
+
+### Travailler avec des données réelles
+
+On importe les données historiques du jeu du Keno sur une période de 100 jour.
+
+```{r}
+data_keno = read.table("keno_202511 6.csv", sep = ";", header = TRUE) %>% select(-c(1, X, devise, numero_jokerplus, multiplicateur, date_de_forclusion))
+data_keno
+```
+
+
+```{r}
+library(lubridate)
+pivot_longer(data_keno,
+    !date_de_tirage,
+    names_to = "boule",
+    values_to = "valeur",
+    names_prefix = "boule"
+  ) -> keno
+
+data_keno <- data_keno %>% mutate(date_de_tirage = as.Date(data_keno$date_de_tirage, format = '%d/%m/%Y'))
+
+difftime(max(data_keno$date_de_tirage), min(data_keno$date_de_tirage))
+keno
+```
+
+```{r}
+```
+
+
+```{r}
+library(scales) # Pour transformer en pourcentage
+nombre_dates <- length(unique(keno$date_de_tirage)) # Calcul nombre de dates distinct
+keno %>% summarise(count = n(), freq = percent(count/nombre_dates), .by = "valeur") %>% arrange(valeur) -> unique_keno
+unique_keno
+```
+
+A corriger khi-2
+```{r}
+sum(((unique_keno$count - 28.57)^2)/28.57)
+
+chisq.test(x = unique_keno$count, p=rep(16/56, 56))
+```
+
+
+```{r}
+pbinom(17, 100, 16/56)
+```
+
+```{r}
+set.seed(123)
+res = c()
+ech = c()
+for (i in 1:10000){
+  for (t in 1:100){
+    ech = c(ech, sample(1:56, 16, replace = FALSE))
+  }
+  res = c(res, min(table(ech)))
+  ech = c()
+}
+as_tibble(res) %>% ggplot(aes(value)) + geom_bar(fill = "tomato") + scale_x_continuous(breaks = 12:25) + ggtitle("Distribution empirique des minimums de fréquence de sortie sur 100 jours") + theme_minimal()
+
+```
+
+Pr(X <= 17)=0.2615, P value est forte donc on conserve l'hypothèse H0 donc aucune boule n'est laisée. Une boule qui est tirée 17 fois ou moins reste très probable.
+
+```{r}
+as_tibble(res) %>% filter(value <= 17) %>% summarise(count = n())
+```
+
+
+
+# Références bibliographiques {.unnumbered}
+
