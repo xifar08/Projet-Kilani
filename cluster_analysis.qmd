@@ -315,5 +315,5 @@ fviz_cluster(cluster3_lloyd,
              main = "Représentation des clusters K-means")
 ```
 
+modif de test
 
-Cecie est un test
