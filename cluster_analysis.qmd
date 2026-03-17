@@ -8,8 +8,6 @@ css: style.css
 lang: fr
 editor: visual
 bibliography: references.bib
-filters:
-  - pseudocode
 ---
 
 # L'article
@@ -36,7 +34,6 @@ library(scales)
 library(factoextra)
 library(NbClust)
 ```
-
 
 ##### Répartition des points simulés
 
@@ -109,13 +106,11 @@ On a une moyenne (3,5)
 
 **Groupe 3**
 
-On a une moyenne (0,6), et une matrice (2, 1.3,
-                                        1.3, 1)
+On a une moyenne (0,6), et une matrice (2, 1.3, 1.3, 1)
 
 ```{r}
 prop.table(table(cl))
 ```
-
 
 ### Représentation des données simulées en fonction de leur groupe
 
@@ -185,8 +180,6 @@ ggplot(df_plot, aes(x = cl, fill = valeur)) +
   ggtitle("Fréquence des modalités dans chaque groupe et variable des données")
 ```
 
-
-
 ### Application de la fonction k-means
 
 On aurait pu explorer toutes les possiblités pour 2 clusters mais c'est impossible vu le nombre de possibilités
@@ -209,7 +202,6 @@ fviz_nbclust(vars [,1:2], kmeans, method = "wss") +
 fviz_nbclust(vars [,1:2], kmeans, nstart = 25, method = "gap_stat", nboot = 50)+
 labs(subtitle = "Gap statistic method") 
 ```
-
 
 ### kmeans - Hartigan
 
@@ -274,7 +266,6 @@ $$
 \end{array}
 $$
 
-
 ```{r}
 cluster3_lloyd = kmeans (vars [,1:2], 3, nstart = 50, algorithm = "Lloyd")
 as_tibble(X) %>% ggplot(aes(x = V1, y=V2)) + geom_point(color = cluster3_lloyd$cluster) + theme_minimal() + ggtitle("Représentation des variables continues en fonction des groupes prédéfinis")
@@ -315,9 +306,6 @@ ggplot(df, aes(x = V1, y = V2)) +
   labs(fill = "Clusters K-means", color = "Groupes initiaux") 
 ```
 
-
-
-
 ```{r}
 fviz_cluster(cluster3_lloyd, 
              data = vars[, 1:2], 
@@ -328,8 +316,4 @@ fviz_cluster(cluster3_lloyd,
 ```
 
 
-
-
-
-
-
+Cecie est un test
