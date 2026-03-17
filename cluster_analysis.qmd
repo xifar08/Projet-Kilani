@@ -343,5 +343,11 @@ fviz_cluster(cluster3_lloyd,
 
 modif de test
 
+<<<<<<< HEAD
 
 test
+=======
+### To-do 
+
+Changer le graph des variables
+>>>>>>> a0c982da97c9aa8b2dac96481e34cb51701fdb9d
