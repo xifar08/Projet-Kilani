@@ -246,6 +246,28 @@ grid.arrange(graph1, graph2, nrow = 1)
 
 ```
 
+```{r}
+cl
+
+cluster3$cluster
+
+table(tibble(cl, cluster3$cluster))
+
+
+library(clue)
+solve_correspondance = solve_LSAP(table(tibble(cl, cluster3$cluster)), maximum = TRUE)
+
+conf_matrice = table(tibble(cl, cluster3$cluster))[, solve_correspondance]
+
+1-sum(diag(conf_matrice))/600 # le taux de points mal placés
+
+library(mclust)
+adjustedRandIndex(cl, cluster3$cluster)
+
+```
+
+
+
 ### kmeans - Lloyd
 
 **Algo de Lloyd**
@@ -270,6 +292,10 @@ $$
 cluster3_lloyd = kmeans (vars [,1:2], 3, nstart = 50, algorithm = "Lloyd")
 as_tibble(X) %>% ggplot(aes(x = V1, y=V2)) + geom_point(color = cluster3_lloyd$cluster) + theme_minimal() + ggtitle("Représentation des variables continues en fonction des groupes prédéfinis")
 ```
+
+
+ESSAYER L4AUTRE METHODE
+
 
 ### Représentation de l'enveloppe convexe
 
