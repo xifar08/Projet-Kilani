@@ -259,14 +259,82 @@ solve_correspondance = solve_LSAP(table(tibble(cl, cluster3$cluster)), maximum =
 
 conf_matrice = table(tibble(cl, cluster3$cluster))[, solve_correspondance]
 
+# le pourcentage de différence est de 7% entre les points simulés et le cluster 3
 1-sum(diag(conf_matrice))/600 # le taux de points mal placés
+```
 
+L'article aurait dû utiliser l'indice de Rand pour évaluer la concordance entre les données simulées et la répartition trouvées par k-means. 
+Explication du fonctionnement du Rand : on appelle la fonction rand.index de la library fossil
+
+Présentons l'indice dans un exemple simple. Supposons une classe avec 9 élèves, on veut comparer les 2 partitions suivantes :
+- Partition 1 :{A,B}, {C,D,E,F,G}, {H,I}
+- Partition 2 :{A}, {B}, {C,D,E}, {F,G}, {H,I}
+
+L'indice va compter le nombre de paires parmi les 36 qui sont soit dans un même groupe soit dans 2 groupes différents dans les 2 partitions.
+
+Dans cet exemple on trouve 80,6% de concordance.
+```{r}
+# L'indice de Rand avec la library fossil
+# on fait un essai 
+library(fossil)
+g1 <- c(1,1,rep(2,5),3,3)
+g2 <- c(1,2,3,3,3,4,4,5,5)
+
+rand.index(g1, g2)
+```
+
+Maintenant on applique à l'article. Le k-means avec k=3 donne une concordance de 90,1%.
+```{r}
+#Calcul de l'indice de Rand pour les points du cluster 3 avec les points similés.
+rand.index(cl,cluster3$cluster)
+```
+```{r}
+#Ici le pourcentage de différence est de 9%, 2 points de plus que dans l'article
+(1-rand.index(cl,cluster3$cluster))*100
+```
+
+Autre library :
+```{r}
+# L'indice de Rand avec la library mclust, c'est une autre library
 library(mclust)
 adjustedRandIndex(cl, cluster3$cluster)
-
 ```
 
 
+### La classification hiérarchique :
+
+Matrice des distances :
+```{r}
+dist(vars[,1:2],method = "euclidean")->distance
+```
+1ère étape : le couple avec la plus petite distance est regroupé ensemble. On calcul le point moyen de ce nouvel ensemble puis on refait une matrice de distance et on réagrège avec le point qui a la plus petite distance.
+L'algorithme a un point faible : s'il y a des distances égales il n'y a pas d'unicité des regroupements car l'algorithme va faire un choix.
+
+Représentation en dendrogramme vertical : 
+```{r}
+library(fastcluster)
+library(sparcl)
+arbre <- hclust(distance,method = 'average')
+#Produce the dendrogram
+plot(arbre,labels=FALSE)
+#Produce a coloured dendrogram
+ColorDendrogram(arbre, y = cl, main="Single Linkage", xlab = "", sub = "", cex = .75)
+arbrecut = cutree(arbre, k = 3)
+```
+Représentation en dendrogramme circulaire : 
+```{r}
+library(dendextend)
+library(circlize)
+
+# Hierarchical clustering dendrogram
+hc <- as.dendrogram(hclust(distance,method = 'average'))
+
+# Circular dendrogram facing inside
+circlize_dendrogram(hc,
+                    labels_track_height = NA,
+                    dend_track_height = 0.5,
+                    labels=FALSE) 
+```
 
 ### kmeans - Lloyd
 

@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.35">
+<meta name="generator" content="quarto-1.8.27">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -10,9 +10,6 @@
 
 <title>Clustering</title>
 <style>
-/* Default styles provided by pandoc.
-** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
-*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -63,6 +60,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 div.csl-bib-body { }
 div.csl-entry {
   clear: both;
+  margin-bottom: 0em;
 }
 .hanging-indent div.csl-entry {
   margin-left:2em;
@@ -84,17 +82,18 @@ div.csl-indent {
 <script src="cluster_analysis_files/libs/clipboard/clipboard.min.js"></script>
 <script src="cluster_analysis_files/libs/quarto-html/quarto.js" type="module"></script>
 <script src="cluster_analysis_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="cluster_analysis_files/libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="cluster_analysis_files/libs/quarto-html/popper.min.js"></script>
 <script src="cluster_analysis_files/libs/quarto-html/tippy.umd.min.js"></script>
 <script src="cluster_analysis_files/libs/quarto-html/anchor.min.js"></script>
 <link href="cluster_analysis_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="cluster_analysis_files/libs/quarto-html/quarto-syntax-highlighting-46f66b053e56abd73bb6e954d61a315b.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="cluster_analysis_files/libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="cluster_analysis_files/libs/bootstrap/bootstrap.min.js"></script>
 <link href="cluster_analysis_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="cluster_analysis_files/libs/bootstrap/bootstrap-efbb37e9afcc02144ebbc7afd12a776f.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="cluster_analysis_files/libs/bootstrap/bootstrap-d742ed06778eb1a5b2a0b8251afbc0b2.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <script type="text/javascript">
 const typesetMath = (el) => {
@@ -149,6 +148,10 @@ window.Quarto = {
   <li><a href="#kmeans---lloyd" id="toc-kmeans---lloyd" class="nav-link" data-scroll-target="#kmeans---lloyd"><span class="header-section-number">2.2.2</span> kmeans - Lloyd</a></li>
   <li><a href="#représentation-de-lenveloppe-convexe" id="toc-représentation-de-lenveloppe-convexe" class="nav-link" data-scroll-target="#représentation-de-lenveloppe-convexe"><span class="header-section-number">2.2.3</span> Représentation de l’enveloppe convexe</a></li>
   </ul></li>
+  </ul></li>
+  <li><a href="#test" id="toc-test" class="nav-link" data-scroll-target="#test"><span class="header-section-number">3</span> test</a>
+  <ul class="collapse">
+  <li><a href="#to-do" id="toc-to-do" class="nav-link" data-scroll-target="#to-do"><span class="header-section-number">3.0.1</span> To-do</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -406,24 +409,6 @@ window.Quarto = {
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_nbclust</span>(vars [,<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>], kmeans, <span class="at">method =</span> <span class="st">"wss"</span>) <span class="sc">+</span></span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">3</span>, <span class="at">linetype =</span> <span class="dv">2</span>)<span class="sc">+</span></span>
 <span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">subtitle =</span> <span class="st">"Méthode du coude - Nombre optimal de clusters"</span>) </span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: The `size` argument of `element_line()` is deprecated as of ggplot2 3.4.0.
-ℹ Please use the `linewidth` argument instead.
-ℹ The deprecated feature was likely used in the ggpubr package.
-  Please report the issue at &lt;https://github.com/kassambara/ggpubr/issues&gt;.</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: The `size` argument of `element_rect()` is deprecated as of ggplot2 3.4.0.
-ℹ Please use the `linewidth` argument instead.
-ℹ The deprecated feature was likely used in the ggpubr package.
-  Please report the issue at &lt;https://github.com/kassambara/ggpubr/issues&gt;.</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
-ℹ Please use `linewidth` instead.
-ℹ The deprecated feature was likely used in the ggpubr package.
-  Please report the issue at &lt;https://github.com/kassambara/ggpubr/issues&gt;.</code></pre>
-</div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -433,18 +418,8 @@ window.Quarto = {
 </div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_nbclust</span>(vars [,<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>], kmeans, <span class="at">nstart =</span> <span class="dv">25</span>, <span class="at">method =</span> <span class="st">"gap_stat"</span>, <span class="at">nboot =</span> <span class="dv">50</span>)<span class="sc">+</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">labs</span>(<span class="at">subtitle =</span> <span class="st">"Gap statistic method"</span>) </span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: pas de convergence en 10 itérations</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: `aes_string()` was deprecated in ggplot2 3.0.0.
-ℹ Please use tidy evaluation idioms with `aes()`.
-ℹ See also `vignette("ggplot2-in-packages")` for more information.
-ℹ The deprecated feature was likely used in the factoextra package.
-  Please report the issue at &lt;https://github.com/kassambara/factoextra/issues&gt;.</code></pre>
-</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_nbclust</span>(vars [,<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>], kmeans, <span class="at">nstart =</span> <span class="dv">25</span>, <span class="at">method =</span> <span class="st">"gap_stat"</span>, <span class="at">nboot =</span> <span class="dv">50</span>)<span class="sc">+</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">labs</span>(<span class="at">subtitle =</span> <span class="st">"Gap statistic method"</span>) </span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -475,32 +450,119 @@ window.Quarto = {
 \end{array}
 \]</span></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gridExtra)</span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>cluster1 <span class="ot">=</span> <span class="fu">kmeans</span> (vars [,<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>], <span class="dv">1</span>, <span class="at">nstart =</span> <span class="dv">50</span>) </span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>cluster2 <span class="ot">=</span> <span class="fu">kmeans</span> (vars [,<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>], <span class="dv">2</span>, <span class="at">nstart =</span> <span class="dv">50</span>) <span class="co"># dans k1 il y a 181 individus / dans k2 il y en a 419</span></span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>cluster3 <span class="ot">=</span> <span class="fu">kmeans</span> (vars [,<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>], <span class="dv">3</span>, <span class="at">nstart =</span> <span class="dv">50</span>)</span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Point moyen : moyenne_1 &amp; moyenne_2</span></span>
-<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a><span class="fu">as_tibble</span>(vars[,<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>]) <span class="sc">%&gt;%</span> <span class="fu">summarise</span>(<span class="at">moyenne_1 =</span> <span class="fu">mean</span>(V1),</span>
-<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>                         <span class="at">moyenne_2 =</span> <span class="fu">mean</span>(V2),</span>
-<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>                         <span class="at">Variance =</span> (<span class="fu">var</span>(V1) <span class="sc">+</span> <span class="fu">var</span>(V2)) <span class="sc">*</span> <span class="dv">599</span> <span class="co"># Somme des distances euclidiennes par rapport au p.m,</span></span>
-<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>                         ) </span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gridExtra)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>cluster1 <span class="ot">=</span> <span class="fu">kmeans</span> (vars [,<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>], <span class="dv">1</span>, <span class="at">nstart =</span> <span class="dv">50</span>) </span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>cluster2 <span class="ot">=</span> <span class="fu">kmeans</span> (vars [,<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>], <span class="dv">2</span>, <span class="at">nstart =</span> <span class="dv">50</span>) <span class="co"># dans k1 il y a 181 individus / dans k2 il y en a 419</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>cluster3 <span class="ot">=</span> <span class="fu">kmeans</span> (vars [,<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>], <span class="dv">3</span>, <span class="at">nstart =</span> <span class="dv">50</span>)</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Point moyen : moyenne_1 &amp; moyenne_2</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="fu">as_tibble</span>(vars[,<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>]) <span class="sc">%&gt;%</span> <span class="fu">summarise</span>(<span class="at">moyenne_1 =</span> <span class="fu">mean</span>(V1),</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>                         <span class="at">moyenne_2 =</span> <span class="fu">mean</span>(V2),</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>                         <span class="at">Variance =</span> (<span class="fu">var</span>(V1) <span class="sc">+</span> <span class="fu">var</span>(V2)) <span class="sc">*</span> <span class="dv">599</span> <span class="co"># Somme des distances euclidiennes par rapport au p.m,</span></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>                         ) </span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 1 × 3
   moyenne_1 moyenne_2 Variance
       &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
 1      1.18      3.79    6481.</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">as_tibble</span>(X) <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> V1, <span class="at">y=</span>V2)) <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="at">color =</span> cluster3<span class="sc">$</span>cluster) <span class="sc">+</span> <span class="fu">theme_minimal</span>() <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="st">"Représentation des variables continues en fonction des groupes prédéfinis"</span>) <span class="ot">-&gt;</span> graph2</span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="fu">grid.arrange</span>(graph1, graph2, <span class="at">nrow =</span> <span class="dv">1</span>)</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">as_tibble</span>(X) <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> V1, <span class="at">y=</span>V2)) <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="at">color =</span> cluster3<span class="sc">$</span>cluster) <span class="sc">+</span> <span class="fu">theme_minimal</span>() <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="st">"Représentation des variables continues en fonction des groupes prédéfinis"</span>) <span class="ot">-&gt;</span> graph2</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="fu">grid.arrange</span>(graph1, graph2, <span class="at">nrow =</span> <span class="dv">1</span>)</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
 <p><img src="cluster_analysis_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>cl</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  [1] 2 1 2 1 2 2 3 2 2 3 1 3 1 2 3 3 2 2 2 2 3 3 1 2 1 2 2 2 2 1 1 2 1 1 3 2 1
+ [38] 1 2 1 2 3 2 1 2 3 1 2 1 3 3 1 2 3 1 1 2 3 2 2 1 1 3 3 3 2 3 2 1 1 3 2 2 3
+ [75] 1 3 2 1 2 2 2 2 1 1 2 3 3 1 2 1 3 3 1 3 1 1 2 2 2 3 2 1 2 3 2 2 3 2 1 3 2
+[112] 2 2 3 1 1 3 2 2 3 1 2 2 1 2 3 3 2 1 2 3 2 3 1 2 2 2 2 1 3 2 3 1 2 2 3 1 1
+[149] 3 3 3 2 3 1 3 1 3 2 3 3 3 3 2 3 2 3 2 1 2 3 3 1 1 1 1 2 1 2 1 2 3 2 1 2 2
+[186] 2 1 3 2 2 3 1 2 2 2 2 3 1 3 3 2 3 2 1 3 1 2 2 2 2 2 1 1 3 2 3 3 3 3 2 3 3
+[223] 2 3 3 3 3 2 2 2 2 1 1 2 2 3 3 3 3 2 2 2 2 3 3 2 1 3 1 3 2 3 3 3 3 3 2 2 1
+[260] 2 3 1 1 2 3 2 1 1 1 2 1 2 2 1 1 2 3 1 3 1 2 1 3 3 2 2 2 2 3 2 2 3 3 2 1 1
+[297] 3 2 3 1 1 2 3 1 1 1 1 3 2 1 2 2 3 2 1 1 3 2 2 2 2 3 1 3 1 2 2 3 2 2 2 1 1
+[334] 3 1 1 2 2 2 2 2 2 3 1 3 2 3 2 3 3 2 3 3 2 2 1 2 1 3 3 1 1 1 1 1 2 1 2 3 3
+[371] 2 3 1 2 2 3 2 2 2 1 2 1 1 3 2 1 1 3 3 3 3 2 2 2 1 2 1 2 2 3 2 3 1 1 3 2 3
+[408] 2 2 3 1 1 1 1 2 3 1 3 3 2 1 3 1 2 1 3 2 3 1 1 2 1 2 3 3 3 1 2 2 2 2 3 2 2
+[445] 3 2 3 2 3 2 2 3 2 2 1 1 1 3 2 2 1 1 1 1 1 1 3 1 2 2 1 3 2 1 3 2 2 3 1 1 3
+[482] 3 2 3 3 3 2 2 3 3 1 2 2 3 2 1 1 3 1 3 1 2 3 1 2 3 2 2 2 3 1 2 3 1 3 2 2 1
+[519] 2 2 3 2 1 1 1 3 2 1 1 1 2 2 2 2 1 1 3 2 2 1 3 2 1 3 3 1 3 2 1 3 2 3 3 2 3
+[556] 1 2 3 2 2 2 2 2 1 1 1 3 2 1 3 3 3 1 2 1 3 3 3 3 1 1 1 1 2 1 2 3 2 1 3 2 3
+[593] 2 3 1 1 1 1 2 2</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>cluster3<span class="sc">$</span>cluster</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  [1] 1 3 1 3 1 1 2 1 1 2 3 2 3 1 2 2 1 1 1 1 2 2 3 1 3 1 1 1 1 3 3 2 3 3 1 1 3
+ [38] 3 1 3 1 2 1 3 1 2 3 1 3 1 2 3 1 1 3 3 1 2 1 1 3 3 2 2 2 2 2 1 3 3 2 1 1 2
+ [75] 3 2 2 3 2 1 1 1 3 3 1 2 2 3 1 3 2 2 3 2 3 3 1 1 1 2 1 3 1 2 1 1 1 1 3 2 1
+[112] 1 1 2 3 3 2 1 1 2 3 1 1 3 1 2 2 1 3 1 2 1 2 3 1 1 1 1 3 2 1 1 3 1 1 2 3 3
+[149] 2 2 2 1 2 3 2 3 2 1 2 2 2 2 1 2 1 2 1 3 1 2 2 3 3 3 3 1 3 2 3 1 2 1 3 1 1
+[186] 1 3 2 1 1 2 3 1 1 1 1 2 3 2 1 1 1 1 3 2 3 1 1 1 1 1 3 3 2 1 1 1 2 1 1 1 2
+[223] 1 1 1 2 2 1 1 1 1 3 3 1 1 2 2 2 2 1 1 1 1 2 2 1 3 2 3 2 1 2 2 2 1 1 1 1 3
+[260] 1 2 3 3 1 1 2 3 3 3 1 3 1 1 3 3 1 2 3 2 3 1 3 2 2 1 1 1 1 2 1 1 2 2 1 3 3
+[297] 2 1 1 3 3 1 2 3 3 3 3 2 1 3 1 1 1 1 3 3 2 1 1 1 1 2 3 2 3 1 1 2 1 1 2 3 3
+[334] 2 3 3 1 1 1 1 1 1 2 3 1 1 2 1 2 2 1 2 2 1 1 3 1 3 1 2 3 3 3 3 3 1 3 1 2 2
+[371] 1 2 3 1 1 2 1 1 1 3 1 3 3 2 1 3 3 1 2 2 2 1 1 1 3 1 3 1 1 1 1 2 3 3 2 1 2
+[408] 1 1 2 3 3 3 3 1 2 3 2 2 1 3 2 3 1 3 2 1 2 3 3 1 3 1 2 2 2 3 1 1 1 1 2 1 1
+[445] 2 1 2 1 1 1 1 1 1 1 3 3 3 1 2 1 3 3 3 3 3 3 2 3 1 1 3 2 1 3 1 1 1 1 3 3 1
+[482] 2 1 2 1 1 1 1 2 2 3 1 1 2 1 3 3 2 3 2 3 1 2 3 1 2 1 1 2 1 3 1 2 3 2 1 1 3
+[519] 1 1 2 1 3 3 3 2 1 3 3 3 1 1 1 1 3 3 2 1 1 3 2 1 3 2 2 3 2 1 3 2 1 2 2 1 2
+[556] 3 1 2 1 1 1 1 1 3 3 3 2 1 3 2 2 2 3 1 3 2 2 2 2 3 3 3 3 2 3 1 2 1 3 2 1 1
+[593] 1 1 3 3 3 3 1 1</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(<span class="fu">tibble</span>(cl, cluster3<span class="sc">$</span>cluster))</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   cluster3$cluster
+cl    1   2   3
+  1   0   0 177
+  2 227  10   0
+  3  33 153   0</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(clue)</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>solve_correspondance <span class="ot">=</span> <span class="fu">solve_LSAP</span>(<span class="fu">table</span>(<span class="fu">tibble</span>(cl, cluster3<span class="sc">$</span>cluster)), <span class="at">maximum =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>conf_matrice <span class="ot">=</span> <span class="fu">table</span>(<span class="fu">tibble</span>(cl, cluster3<span class="sc">$</span>cluster))[, solve_correspondance]</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span><span class="sc">-</span><span class="fu">sum</span>(<span class="fu">diag</span>(conf_matrice))<span class="sc">/</span><span class="dv">600</span> <span class="co"># le taux de points mal placés</span></span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.07166667</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mclust)</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Package 'mclust' version 6.1.2
+Type 'citation("mclust")' for citing this R package in publications.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'mclust'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:purrr':
+
+    map</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:dplyr':
+
+    count</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:mvtnorm':
+
+    dmvnorm</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">adjustedRandIndex</span>(cl, cluster3<span class="sc">$</span>cluster)</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.7982084</code></pre>
 </div>
 </div>
 </section>
@@ -523,65 +585,23 @@ window.Quarto = {
 \end{array}
 \]</span></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>cluster3_lloyd <span class="ot">=</span> <span class="fu">kmeans</span> (vars [,<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>], <span class="dv">3</span>, <span class="at">nstart =</span> <span class="dv">50</span>, <span class="at">algorithm =</span> <span class="st">"Lloyd"</span>)</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>cluster3_lloyd <span class="ot">=</span> <span class="fu">kmeans</span> (vars [,<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>], <span class="dv">3</span>, <span class="at">nstart =</span> <span class="dv">50</span>, <span class="at">algorithm =</span> <span class="st">"Lloyd"</span>)</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Warning: pas de convergence en 10 itérations
-Warning: pas de convergence en 10 itérations
-Warning: pas de convergence en 10 itérations
-Warning: pas de convergence en 10 itérations
-Warning: pas de convergence en 10 itérations
-Warning: pas de convergence en 10 itérations
-Warning: pas de convergence en 10 itérations
-Warning: pas de convergence en 10 itérations
-Warning: pas de convergence en 10 itérations
-Warning: pas de convergence en 10 itérations
-Warning: pas de convergence en 10 itérations
-Warning: pas de convergence en 10 itérations
-Warning: pas de convergence en 10 itérations</code></pre>
+<pre><code>Warning: did not converge in 10 iterations
+Warning: did not converge in 10 iterations
+Warning: did not converge in 10 iterations
+Warning: did not converge in 10 iterations
+Warning: did not converge in 10 iterations
+Warning: did not converge in 10 iterations
+Warning: did not converge in 10 iterations
+Warning: did not converge in 10 iterations
+Warning: did not converge in 10 iterations
+Warning: did not converge in 10 iterations
+Warning: did not converge in 10 iterations
+Warning: did not converge in 10 iterations
+Warning: did not converge in 10 iterations</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">as_tibble</span>(X) <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> V1, <span class="at">y=</span>V2)) <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="at">color =</span> cluster3_lloyd<span class="sc">$</span>cluster) <span class="sc">+</span> <span class="fu">theme_minimal</span>() <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="st">"Représentation des variables continues en fonction des groupes prédéfinis"</span>)</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="cluster_analysis_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-</section>
-<section id="représentation-de-lenveloppe-convexe" class="level3" data-number="2.2.3">
-<h3 data-number="2.2.3" class="anchored" data-anchor-id="représentation-de-lenveloppe-convexe"><span class="header-section-number">2.2.3</span> Représentation de l’enveloppe convexe</h3>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Combiner vos données, la couleur d'origine (cl) et les résultats du k-means</span></span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">as_tibble</span>(X) <span class="sc">%&gt;%</span></span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">Couleur_Origine =</span> cl,</span>
-<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># On extrait les affectations aux clusters de l'objet kmeans en facteur</span></span>
-<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">Cluster_Kmeans =</span> <span class="fu">as.factor</span>(cluster3_lloyd<span class="sc">$</span>cluster) </span>
-<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Calculer les points formant l'enveloppe convexe pour CHAQUE cluster k-means</span></span>
-<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a><span class="co"># La fonction chull() renvoie les indices des points qui forment la bordure convexe</span></span>
-<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a>hulls <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
-<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Cluster_Kmeans) <span class="sc">%&gt;%</span></span>
-<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="fu">chull</span>(V1, V2))</span>
-<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-15"><a href="#cb28-15" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Créer le graphique combiné</span></span>
-<span id="cb28-16"><a href="#cb28-16" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df, <span class="fu">aes</span>(<span class="at">x =</span> V1, <span class="at">y =</span> V2)) <span class="sc">+</span></span>
-<span id="cb28-17"><a href="#cb28-17" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Étape A : Tracer les enveloppes convexes (polygones) des K-means</span></span>
-<span id="cb28-18"><a href="#cb28-18" aria-hidden="true" tabindex="-1"></a>  <span class="co"># alpha = 0.3 permet de rendre la surface transparente pour voir les points</span></span>
-<span id="cb28-19"><a href="#cb28-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_polygon</span>(<span class="at">data =</span> hulls, </span>
-<span id="cb28-20"><a href="#cb28-20" aria-hidden="true" tabindex="-1"></a>               <span class="fu">aes</span>(<span class="at">fill =</span> Cluster_Kmeans, <span class="at">group =</span> Cluster_Kmeans), </span>
-<span id="cb28-21"><a href="#cb28-21" aria-hidden="true" tabindex="-1"></a>               <span class="at">alpha =</span> <span class="fl">0.3</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
-<span id="cb28-22"><a href="#cb28-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"#FAADAD"</span>, <span class="st">"#ADB4FA"</span>, <span class="st">"#ADFABA"</span>))<span class="sc">+</span></span>
-<span id="cb28-23"><a href="#cb28-23" aria-hidden="true" tabindex="-1"></a>               </span>
-<span id="cb28-24"><a href="#cb28-24" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Étape B : Tracer les points avec leurs couleurs d'origine (groupes prédéfinis)</span></span>
-<span id="cb28-25"><a href="#cb28-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">color =</span> <span class="fu">factor</span>(Couleur_Origine))) <span class="sc">+</span></span>
-<span id="cb28-26"><a href="#cb28-26" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb28-27"><a href="#cb28-27" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Esthétique</span></span>
-<span id="cb28-28"><a href="#cb28-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
-<span id="cb28-29"><a href="#cb28-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Représentation des variables continues en fonction des groupes prédéfinis</span><span class="sc">\n</span><span class="st">et enveloppes convexes des K-means"</span>) <span class="sc">+</span></span>
-<span id="cb28-30"><a href="#cb28-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">fill =</span> <span class="st">"Clusters K-means"</span>, <span class="at">color =</span> <span class="st">"Groupes initiaux"</span>) </span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">as_tibble</span>(X) <span class="sc">%&gt;%</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> V1, <span class="at">y=</span>V2)) <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="at">color =</span> cluster3_lloyd<span class="sc">$</span>cluster) <span class="sc">+</span> <span class="fu">theme_minimal</span>() <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="st">"Représentation des variables continues en fonction des groupes prédéfinis"</span>)</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -590,13 +610,41 @@ Warning: pas de convergence en 10 itérations</code></pre>
 </div>
 </div>
 </div>
+<p>ESSAYER L4AUTRE METHODE</p>
+</section>
+<section id="représentation-de-lenveloppe-convexe" class="level3" data-number="2.2.3">
+<h3 data-number="2.2.3" class="anchored" data-anchor-id="représentation-de-lenveloppe-convexe"><span class="header-section-number">2.2.3</span> Représentation de l’enveloppe convexe</h3>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_cluster</span>(cluster3_lloyd, </span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>             <span class="at">data =</span> vars[, <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>], </span>
-<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">ellipse.type =</span> <span class="st">"convex"</span>,</span>
-<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>             <span class="at">geom =</span> <span class="st">"point"</span>, <span class="co"># "point" évite d'afficher le numéro de chaque ligne</span></span>
-<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>             <span class="at">show.clust.cent =</span> <span class="cn">TRUE</span>, <span class="co"># Affiche le centre des clusters (croix)</span></span>
-<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>             <span class="at">main =</span> <span class="st">"Représentation des clusters K-means"</span>)</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Combiner vos données, la couleur d'origine (cl) et les résultats du k-means</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">as_tibble</span>(X) <span class="sc">%&gt;%</span></span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">Couleur_Origine =</span> cl,</span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># On extrait les affectations aux clusters de l'objet kmeans en facteur</span></span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">Cluster_Kmeans =</span> <span class="fu">as.factor</span>(cluster3_lloyd<span class="sc">$</span>cluster) </span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Calculer les points formant l'enveloppe convexe pour CHAQUE cluster k-means</span></span>
+<span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a><span class="co"># La fonction chull() renvoie les indices des points qui forment la bordure convexe</span></span>
+<span id="cb39-11"><a href="#cb39-11" aria-hidden="true" tabindex="-1"></a>hulls <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span></span>
+<span id="cb39-12"><a href="#cb39-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Cluster_Kmeans) <span class="sc">%&gt;%</span></span>
+<span id="cb39-13"><a href="#cb39-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="fu">chull</span>(V1, V2))</span>
+<span id="cb39-14"><a href="#cb39-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-15"><a href="#cb39-15" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Créer le graphique combiné</span></span>
+<span id="cb39-16"><a href="#cb39-16" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df, <span class="fu">aes</span>(<span class="at">x =</span> V1, <span class="at">y =</span> V2)) <span class="sc">+</span></span>
+<span id="cb39-17"><a href="#cb39-17" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Étape A : Tracer les enveloppes convexes (polygones) des K-means</span></span>
+<span id="cb39-18"><a href="#cb39-18" aria-hidden="true" tabindex="-1"></a>  <span class="co"># alpha = 0.3 permet de rendre la surface transparente pour voir les points</span></span>
+<span id="cb39-19"><a href="#cb39-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_polygon</span>(<span class="at">data =</span> hulls, </span>
+<span id="cb39-20"><a href="#cb39-20" aria-hidden="true" tabindex="-1"></a>               <span class="fu">aes</span>(<span class="at">fill =</span> Cluster_Kmeans, <span class="at">group =</span> Cluster_Kmeans), </span>
+<span id="cb39-21"><a href="#cb39-21" aria-hidden="true" tabindex="-1"></a>               <span class="at">alpha =</span> <span class="fl">0.3</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
+<span id="cb39-22"><a href="#cb39-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"#FAADAD"</span>, <span class="st">"#ADB4FA"</span>, <span class="st">"#ADFABA"</span>))<span class="sc">+</span></span>
+<span id="cb39-23"><a href="#cb39-23" aria-hidden="true" tabindex="-1"></a>               </span>
+<span id="cb39-24"><a href="#cb39-24" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Étape B : Tracer les points avec leurs couleurs d'origine (groupes prédéfinis)</span></span>
+<span id="cb39-25"><a href="#cb39-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">color =</span> <span class="fu">factor</span>(Couleur_Origine))) <span class="sc">+</span></span>
+<span id="cb39-26"><a href="#cb39-26" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb39-27"><a href="#cb39-27" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Esthétique</span></span>
+<span id="cb39-28"><a href="#cb39-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb39-29"><a href="#cb39-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Représentation des variables continues en fonction des groupes prédéfinis</span><span class="sc">\n</span><span class="st">et enveloppes convexes des K-means"</span>) <span class="sc">+</span></span>
+<span id="cb39-30"><a href="#cb39-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">fill =</span> <span class="st">"Clusters K-means"</span>, <span class="at">color =</span> <span class="st">"Groupes initiaux"</span>) </span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -605,13 +653,36 @@ Warning: pas de convergence en 10 itérations</code></pre>
 </div>
 </div>
 </div>
-<p>Cecie est un test</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_cluster</span>(cluster3_lloyd, </span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>             <span class="at">data =</span> vars[, <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>], </span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">ellipse.type =</span> <span class="st">"convex"</span>,</span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>             <span class="at">geom =</span> <span class="st">"point"</span>, <span class="co"># "point" évite d'afficher le numéro de chaque ligne</span></span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>             <span class="at">show.clust.cent =</span> <span class="cn">TRUE</span>, <span class="co"># Affiche le centre des clusters (croix)</span></span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>             <span class="at">main =</span> <span class="st">"Représentation des clusters K-means"</span>)</span></code></pre></div><button title="Copier vers le presse-papier" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="cluster_analysis_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>modif de test</p>
+<p>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</p>
+</section>
+</section>
+</section>
+<section id="test" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> test</h1>
+<section id="to-do" class="level3" data-number="3.0.1">
+<h3 data-number="3.0.1" class="anchored" data-anchor-id="to-do"><span class="header-section-number">3.0.1</span> To-do</h3>
+<p>Changer le graph des variables &gt;&gt;&gt;&gt;&gt;&gt;&gt; a0c982da97c9aa8b2dac96481e34cb51701fdb9d</p>
 
 </section>
 </section>
-</section>
 
-<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">Les références</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">Les références</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
 <div id="ref-clusterAnalysis" class="csl-entry" role="listitem">
 Flynt, Abby, et Nema Dean. 2016. <span>«&nbsp;A Survey of Popular R Packages for Cluster Analysis&nbsp;»</span>. <em>Journal of Educational and Behavioral Statistics</em> 41 (2): 205‑25.
 </div>
