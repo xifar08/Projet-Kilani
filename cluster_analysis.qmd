@@ -260,11 +260,85 @@ solve_correspondance = solve_LSAP(table(tibble(cl, cluster3$cluster)), maximum =
 conf_matrice = table(tibble(cl, cluster3$cluster))[, solve_correspondance]
 
 1-sum(diag(conf_matrice))/600 # le taux de points mal placés
+```
+L'article aurait dû utiliser l'indice de Rand pour évaluer la concordance entre les données simulées et la répartition trouvée par kmeans(). Explicatoin du fonctionnement du Rand : L'indice de Rand est une mesure de similarité entre deux partitions d'un ensemble. Il est principalement utilisé en catégorisation automatique. Son principe est de mesurer la consistance (le taux d'accord) entre deux partitions.
 
-library(mclust)
-adjustedRandIndex(cl, cluster3$cluster)
+Prenons un exemple pour illustrer la méthode, supposons une classe qui a 9 élèves, on veut comparer les deux partitions suivante : 
+- partition 1 : {A,B}, {C,D,E,F,G}, {H,I}
+- partition 2 : {A}, {B}, {C,D,E}, {F,G}, {H,I}
+
+L'indice va compter le nombre de paires parmi les 36 qui sont soit dans un même groupe, soit dans deux groupes différents dans la partition 1 et la partition 2.
+
+Dans cet exemple, on trouve 80,6% de concordance.
+
+```{r}
+library(fossil)
+g1 = c(1, 1,rep(2, 5), 3,3)
+g2 = c(1, 2, 3, 3, 3, 4, 4, 5, 5)
+
+rand.index(g1, g2)
+(7+7+6+6+6+5+5+8+8)/36/2
+```
+
+Application de l'indice de Rand à nos données de clustering. Le kmeans() avec k = 3 nous donne de concordance de 90,1%.
+
+```{r}
+rand.index(cl, cluster3$cluster)
+```
+
+La classification hiérarchique :
+
+méthode single linkage
+```{r}
+dist(vars[, 1:2], diag = TRUE, method = "euclidean")-> distance
+```
+
+```{r}
+library(fastcluster)
+arbre <- hclust(distance, method = "average")
+plot(arbre, labels = FALSE, main = "Dendrogramme")
 
 ```
+
+```{r}
+library(sparcl)
+ColorDendrogram(arbre, y = cl, main="Single Linkage", xlab = "", sub = "", cex = .75)
+```
+```{r}
+cutree(arbre, k = 3)
+```
+
+
+```{r}
+library(dendextend)
+library(circlize)
+
+# Hierarchical clustering dendrogram
+hc <- as.dendrogram(arbre)
+
+# Circular dendrogram
+circlize_dendrogram(hc,
+                    labels_track_height = NA,
+                    dend_track_height = 0.5,
+                    labels = FALSE)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -341,13 +415,3 @@ fviz_cluster(cluster3_lloyd,
              main = "Représentation des clusters K-means")
 ```
 
-modif de test
-
-<<<<<<< HEAD
-
-test
-=======
-### To-do 
-
-Changer le graph des variables
->>>>>>> a0c982da97c9aa8b2dac96481e34cb51701fdb9d
