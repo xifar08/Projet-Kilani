@@ -1,0 +1,241 @@
+---
+title: "A Survey of Popular R Packages for Cluster Analysis"
+author: "Arsène"
+lang: fr
+execute:
+  warning: false
+  message: false
+format: 
+  html:
+    theme: cosmo
+    toc: true
+  pdf:
+    include-in-header: 
+      text: |
+        \usepackage{algorithm}
+        \usepackage{algorithmic}
+---
+
+# Les données Synthétique de l'article
+
+```{r}
+### chargement du package
+#install.packages("mvtnorm")
+#install.packages("MASS")
+#install.packages("plotly")
+library(mvtnorm)
+library(MASS)
+library(plotly)
+
+#install.packages("ggplot2")
+library(ggplot2)
+
+#| label: setup
+
+#compilation de mes packages
+library(mvtnorm)
+library(MASS)
+library(ggplot2)
+library(tidyverse) 
+```
+
+```{r}
+### initialisation de la graine
+set.seed(288)
+
+# Creating continuous variables
+pi = c(0.3, 0.4, 0.3)
+mu = matrix(c(0, 0, 3, 5, 0, 6), 2, 3, byrow=FALSE)
+Sigma.sph = diag(c(1, 1))
+Sigma.ell = matrix(c(2, 1.3, 1.3, 1),2, 2, byrow=TRUE)
+cl = sample(c(1, 2, 3), 600, T, pi)
+X = matrix(0, 600, 2)
+for(i in 1:600)
+{
+  ifelse(cl[i] == 3, X[i,]<-rmvnorm(1, mu[,3], Sigma.ell), X[i,]<-rmvnorm(1, mu[,cl[i]], Sigma.sph))
+}
+eqscplot(X, col = cl, pch = 18)
+
+### on refait le cluster en ggplot
+
+X = as_data_frame(X)
+
+ggplot(data = X ,aes(x = V1, y = V2)) + geom_point(col = cl)
+
+
+```
+
+### Tirage binomial
+
+Un tirage binomial est un modele de probabilité qui décrit le nombre de succés dans une série d'expérience indépendantes, chacune ayant 2 résultats possible, soit **p** la probabilité de succés et 1-**p** l'échec
+
+```{r}
+
+# Creating discrete variables
+# Note for poLCA and clustMD, coding must start at 1.
+
+# Uniform prob. of success for all observations (success means a value of 2, whereas failure would be a value of 1)
+
+### on veut savoir au bout de combien de lancé on à eu notre premier succes
+c1 = rbinom(600, 1, .5) + 1
+
+# Success more likely in red and green groups
+c2 = NULL
+for(i in 1:600){
+  ifelse(cl[i] == 1, c2[i]<-rbinom(1, 1, .1)+1, c2[i]<-rbinom(1, 1, .9)+1)
+}
+
+
+# More likely to be a 1 in black, a 2 in red and a 3 in green
+c3 = NULL
+for(i in 1:600){
+  if(cl[i] == 1) c3[i] = sample(1:3, 1, prob = c(.6, .2, .2))
+  if(cl[i] == 2) c3[i] = sample(1:3, 1, prob = c(.1, .8, .1))
+  if(cl[i] == 3) c3[i] = sample(1:3, 1, prob = c(.1, .1, .8))
+} 
+
+
+# Success more likely in red group
+c4 = NULL
+for(i in 1:600){
+  ifelse(cl[i] == 2, c4[i]<-rbinom(1, 1, .8)+1, c4[i]<-rbinom(1, 1, .2)+1)
+}
+
+# Merging the variables into our complete mixed-mode dataset, vars
+vars = cbind(X, c1, c2, c3, c4)
+```
+
+### Faire un graphique en barre qui présente les proportion par variable
+
+# Kmeans
+
+\*avec k (moyenne) et means (le nombre de cluster)
+
+On explore des possibilité pour minimiser la distance
+
+```{r}
+cluster1 = kmeans(vars[,1:2], 1, nstart = 50)
+cluster2 = kmeans(vars[,1:2], 2, nstart = 50)
+cluster3 = kmeans(vars[,1:2], 3, nstart = 50)
+
+library(tidyverse)
+
+as_tibble(vars[,1:2]) |> summarise(moyennev1 = mean(vars$V1), moyennev2 = mean(vars$V2))
+### Somme des distances euclidienne par rapport au point moyen
+
+```
+
+### on refait le graphique pour voir si les points sont aligné à l'existant
+
+```{r}
+##install.packages("factoextra")
+##install.packages("ggpubr")
+library(ggpubr)
+library(factoextra)
+
+as_tibble(vars[,1:2]) |> ggplot(aes(x = V1, y = V2)) + geom_point(col = cluster3$cluster, ellipse.type = "convex")
+
+```
+
+Si on souhaite présenté l'enveloppe convexe des clusters, on doit rajouté le paramétre géom_mark_hull du package ggplot
+
+```{r}
+##install.packages("factoextra")
+##install.packages("ggpubr")
+##install.packages("ggforce")
+library(ggpubr)
+library(factoextra)
+
+library(ggplot2)
+library(dplyr)
+library(ggforce)
+
+# 1. On prépare les données dans un seul tableau propre
+df_plot <- as_tibble(vars[, 1:2]) |> 
+  mutate(Cluster = as.factor(cluster3$cluster))
+
+# 2. On trace avec geom_mark_hull
+ggplot(df_plot, aes(x = V1, y = V2, color = Cluster, fill = Cluster)) +
+  geom_point() +
+  # trace le contour convexe (concavity = 10 pour forcé l'aspect convexe)
+  geom_mark_hull(concavity = 10, alpha = 0.2, show.legend = FALSE) + 
+  theme_bw() #+
+  # On applique ta palette de couleurs
+  #scale_color_manual(values = c("#2E9FDF", "#00AFBB", "#E7B800")) +
+  #scale_fill_manual(values = c("#2E9FDF", "#00AFBB", "#E7B800"))
+```
+
+### Les Tirages aléatoire bivérié
+
+Les auteurs ont tiré 177 individu dans une loi normal bivarié de moyenne (0,0) et de matrice identité (comment vais je l'écrire sachant que c'est des 1 en diagonale )
+
+### graphique 3D
+
+```{r}
+# Chargement des packages
+library(mvtnorm) # C'est ici que se trouve rmvnorm !
+library(plot3D)  # Pour le vrai histogramme en 3D
+
+# 1. Génération de tes 177 individus
+set.seed(123)
+mu_177 <- c(0, 0)
+sigma_177 <- diag(2) 
+
+# Utilisation correcte de rmvnorm (sans MASS::)
+echantillon_177 <- rmvnorm(177, mean = mu_177, sigma = sigma_177)
+df_177 <- data.frame(x = echantillon_177[, 1], y = echantillon_177[, 2])
+
+# 2. Découpage en intervalles (bins) pour créer la base des barres
+x_bins <- cut(df_177$x, breaks = 15)
+y_bins <- cut(df_177$y, breaks = 15)
+
+# 3. Calcul des effectifs pour chaque case du quadrillage (hauteur des barres)
+frequences <- table(x_bins, y_bins)
+
+# 4. Création du véritable histogramme 3D
+hist3D(z = frequences, 
+       border = "black", 
+       xlab = "Variable X", ylab = "Variable Y", zlab = "Fréquence",
+       main = "Histogramme 3D de la loi normale bivariée",
+       theta = 40, phi = 40, 
+       col = heat.colors(256))
+
+```
+
+```{r}
+
+# 1. On prépare les données en incluant le vrai cluster (cl)
+df_categoriel <- data.frame(Cluster_vrai = as.factor(cl), c1, c2, c3, c4) |>
+  pivot_longer(cols = c1:c4, names_to = "Variable", values_to = "Modalite") |>
+  mutate(Modalite = as.factor(Modalite))
+
+# 2. Création du graphique avec tes couleurs ET le facet_wrap
+ggplot(df_categoriel, aes(x = Variable, fill = Modalite)) +
+  geom_bar(position = "fill", color = "black") + 
+  facet_wrap(~ Cluster_vrai, labeller = label_both) + # Séparation en 3 graphiques
+  scale_y_continuous(labels = scales::percent) +
+  scale_fill_manual(values = c("1" = "white", "2" = "gray", "3" = "black")) +
+  labs(
+    title = "Proportions des modalités par variable (c1 à c4) et par cluster",
+    x = "Variables",
+    y = "Proportion",
+    fill = "Modalité"
+  ) +
+  theme_minimal()
+
+```
+
+Ce qu'on cherche à minimiser c'est la distance des individus d'un même cluster
+
+\subsection{Les algorithmes d'optimisation pour les K-moyennes}
+
+L'objectif principal du partitionnement en K-moyennes (K-means) est de diviser un ensemble de $n$ observations $X = \{x_1, x_2, \dots, x_n\}$ en $k$ groupes distincts (clusters) $C = \{C_1, C_2, \dots, C_k\}$. L'algorithme cherche à minimiser la variance intra-classe, souvent appelée somme des carrés intra-cluster (Within-Cluster Sum of Squares, WCSS).
+
+# Indice de Rand
+```{r}
+
+```
+
+L'article aurait du utiliser l'indice de Rand pour évaluer, la concordance entre les données simuléré et la répartition trouver par kmeans()
+
+Explication du fonctionnement du rand
