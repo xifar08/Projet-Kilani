@@ -297,7 +297,6 @@ dist(vars[, 1:2], diag = TRUE, method = "euclidean")-> distance
 library(fastcluster)
 arbre <- hclust(distance, method = "average")
 plot(arbre, labels = FALSE, main = "Dendrogramme")
-
 ```
 
 ```{r}
@@ -305,8 +304,37 @@ library(sparcl)
 ColorDendrogram(arbre, y = cl, main="Single Linkage", xlab = "", sub = "", cex = .75)
 ```
 ```{r}
-cutree(arbre, k = 3)
+rand.index(cl, cutree(arbre, k=3))
+solve_correspondance_arbre = solve_LSAP(table(tibble(cl, cutree(arbre, k=3))), maximum = TRUE)
+
+conf_matrice_arbre = table(tibble(cl, cutree(arbre, k=3)))[, solve_correspondance_arbre]
+conf_matrice_arbre
 ```
+
+## Illustration avec 10 individus: 
+
+```{r}
+cbind(X, cl) -> data_10
+
+data_10 %>% as_tibble() %>% arrange(cl) %>% slice(1:3, 178:181, 598:600)-> data_10
+cluster_10 = kmeans (data_10, 3, nstart = 50)
+dist(data_10[,1:2], diag = TRUE, method = "euclidean")-> distance_10
+arbre_10 <- hclust(distance_10, method = "average")
+plot(arbre_10, main = "Dendrogramme")
+ColorDendrogram(arbre_10, y = data_10$cl, main="Single Linkage", xlab = "", sub = "", cex = .75, labels = row.names(data_10)) -> graph_10_1
+
+data_10 %>% as.data.frame() %>% ggplot(aes(x = V1, y = V2, label =row.names(data_10)))+
+  geom_point(aes(color = factor(data_10$cl)), size = 2.5)+geom_text(hjust = 2)+
+  theme_minimal() -> graph_10_2
+
+cbind(graph_10_1, graph_10_2)
+```
+
+
+
+
+
+
 
 
 ```{r}
