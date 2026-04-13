@@ -314,7 +314,7 @@ data_10 |> as_tibble() |>arrange(cl) |> slice(1:3,178:181,598:600)-> data_10
 dist(data_10[,1:2],method = 'euclidean')->distance_10
 arbre_10 <- hclust(distance_10, method = "average")
 plot(arbre_10, main = "Dendrogramme")
-ColorDendrogram(arbre_10, y = data_10$cl, main="Single Linkage", xlab = "", sub = "", cex = .75,labels=rownames(data_10))
+# ColorDendrogram(arbre_10, y = data_10$cl, main="Single Linkage", xlab = "", sub = "", cex = .75,labels=rownames(data_10))
 ```
 Voici la représentation dans le plan des 10 points :
 ```{r}
@@ -448,13 +448,30 @@ fviz_cluster(cluster3_lloyd,
              main = "Représentation des clusters K-means")
 ```
 
-modif de test
+### k-means Clustering Methods Based on Finite Mixture Models
 
-<<<<<<< HEAD
+Expliquer le principe de cet algorithme : mélange de distributions gaussiennes. On ajoute jusqu'à 9 vecteurs. On regarde le maximum de vraisemblance à chaque ajout (BIC) et on choisi le nombre de gaussienne pour le BIC maximale.
+Expliquer le BIC : on veut maximiser le BIC.
 
-test
-=======
-### To-do 
+```{r}
+m1 = Mclust(vars[,1:2])
+```
+```{r}
+summary(m1)
+```
 
-Changer le graph des variables
->>>>>>> a0c982da97c9aa8b2dac96481e34cb51701fdb9d
+```{r}
+plot(m1)
+```
+
+```{r}
+# matrice de confusion
+table(cl, m1$class)
+```
+```{r}
+m1$parameters
+# la première ligne c'est les tau
+# ensuite c'est les coordonnées des moyennes
+# puis c'est les variances
+```
+
