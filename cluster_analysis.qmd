@@ -33,6 +33,7 @@ library(tidyverse)
 library(scales)
 library(factoextra)
 library(NbClust)
+library(mclust)
 ```
 
 ##### Répartition des points simulés
@@ -261,11 +262,10 @@ conf_matrice = table(tibble(cl, cluster3$cluster))[, solve_correspondance]
 
 1-sum(diag(conf_matrice))/600 # le taux de points mal placés
 ```
+
 L'article aurait dû utiliser l'indice de Rand pour évaluer la concordance entre les données simulées et la répartition trouvée par kmeans(). Explicatoin du fonctionnement du Rand : L'indice de Rand est une mesure de similarité entre deux partitions d'un ensemble. Il est principalement utilisé en catégorisation automatique. Son principe est de mesurer la consistance (le taux d'accord) entre deux partitions.
 
-Prenons un exemple pour illustrer la méthode, supposons une classe qui a 9 élèves, on veut comparer les deux partitions suivante : 
-- partition 1 : {A,B}, {C,D,E,F,G}, {H,I}
-- partition 2 : {A}, {B}, {C,D,E}, {F,G}, {H,I}
+Prenons un exemple pour illustrer la méthode, supposons une classe qui a 9 élèves, on veut comparer les deux partitions suivante : - partition 1 : {A,B}, {C,D,E,F,G}, {H,I} - partition 2 : {A}, {B}, {C,D,E}, {F,G}, {H,I}
 
 L'indice va compter le nombre de paires parmi les 36 qui sont soit dans un même groupe, soit dans deux groupes différents dans la partition 1 et la partition 2.
 
@@ -289,6 +289,7 @@ rand.index(cl, cluster3$cluster)
 La classification hiérarchique :
 
 méthode single linkage
+
 ```{r}
 dist(vars[, 1:2], diag = TRUE, method = "euclidean")-> distance
 ```
@@ -303,6 +304,7 @@ plot(arbre, labels = FALSE, main = "Dendrogramme")
 library(sparcl)
 ColorDendrogram(arbre, y = cl, main="Single Linkage", xlab = "", sub = "", cex = .75)
 ```
+
 ```{r}
 rand.index(cl, cutree(arbre, k=3))
 solve_correspondance_arbre = solve_LSAP(table(tibble(cl, cutree(arbre, k=3))), maximum = TRUE)
@@ -311,7 +313,7 @@ conf_matrice_arbre = table(tibble(cl, cutree(arbre, k=3)))[, solve_correspondanc
 conf_matrice_arbre
 ```
 
-## Illustration avec 10 individus: 
+## Illustration avec 10 individus:
 
 ```{r}
 cbind(X, cl) -> data_10
@@ -330,13 +332,6 @@ data_10 %>% as.data.frame() %>% ggplot(aes(x = V1, y = V2, label =row.names(data
 cbind(graph_10_1, graph_10_2)
 ```
 
-
-
-
-
-
-
-
 ```{r}
 library(dendextend)
 library(circlize)
@@ -350,25 +345,6 @@ circlize_dendrogram(hc,
                     dend_track_height = 0.5,
                     labels = FALSE)
 ```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 ### kmeans - Lloyd
 
@@ -395,9 +371,7 @@ cluster3_lloyd = kmeans (vars [,1:2], 3, nstart = 50, algorithm = "Lloyd")
 as_tibble(X) %>% ggplot(aes(x = V1, y=V2)) + geom_point(color = cluster3_lloyd$cluster) + theme_minimal() + ggtitle("Représentation des variables continues en fonction des groupes prédéfinis")
 ```
 
-
 ESSAYER L4AUTRE METHODE
-
 
 ### Représentation de l'enveloppe convexe
 
@@ -442,4 +416,55 @@ fviz_cluster(cluster3_lloyd,
              show.clust.cent = TRUE, # Affiche le centre des clusters (croix)
              main = "Représentation des clusters K-means")
 ```
+
+
+## Clustering Methods Based
+
+EXPLIQUER LE PRINCIPE
+
+on est dans le  cas multivariée 
+
+C'est le maximum de vraisemblance, avec le BIC le plus grand 
+
+Après on compare la simulation avec cette méthode
+
+```{r}
+#Fit the mbc model for a range of number of components, default 1 to 9 and all variance parameterisations on the continuous variables in the first two columns of the vars matrix
+m1 = Mclust(vars[,1:2])
+m1
+#'Mclust' model object:
+#  best model: ellipsoidal, equal orientation (VVE) with 3 components
+
+#Look at the summary of the model
+summary(m1)
+
+#m1$parameters
+
+```
+
+```{r}
+#----------------------------------------------------
+#  Gaussian finite mixture model fitted by EM algorithm 
+#----------------------------------------------------
+  
+#  Mclust VVE (ellipsoidal, equal orientation) model with 3 components:
+  
+#  log.likelihood   n df       BIC       ICL
+#-2230.702 600 15 -4557.359 -4572.325
+
+#Clustering table:
+#  1   2   3 
+#229 177 194 
+
+#Look at the BIC, classification and other plots for this model
+plot(m1)
+
+# cross-classification table
+#table(cl, m1$class)
+```
+
+
+
+
+ 
 
