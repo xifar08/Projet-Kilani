@@ -1,0 +1,94 @@
+---
+title: "Archetypes"
+author: "Raphaël Péné"
+format: html
+editor: visualtoc: true
+number-sections: true
+format: html
+css: style.css
+lang: fr
+editor: visual
+---
+
+# Les archetypes 
+
+```{r}
+library(archetypes)
+library(ggplot2)
+```
+
+```{r}
+data("skel")
+```
+
+```{r}
+# dataframe sans le genre
+skel2<-subset(skel, select=-Gender)
+```
+
+```{r}
+#représentation de l'individu moyen
+jd()
+```
+```{r}
+# taille moyenne de l'échantillon
+mean(skel2$Height)
+```
+L'article présente des données simulées. 
+```{r}
+data("toy")
+```
+
+```{r}
+plot(toy)
+```
+Dans l'article : m c'est les colonnes, x les individus, z les archétypes. Dans le dataset on a 10 colonnes (quand on enlève les genres). Un z est donc de dimension (1,10). Alpha est la pondération des individus, c'est la distance projetée sur les segments produits par les z. Pour rappel, la somme des alpha doit être égale à 1.
+
+L'archétype doit être placé dans l'enveloppe convexe de la distribution des données. En effet, on souhaite que l'archétype soit une combinaison pondérée des individus. La somme des pondérations doivent être égales à 1. On va essayer de trouver le nombre d'archétypes optimal pour minimiser la distance entre les individus et les archétypes.
+Résultat de théorème : à partir de 2 archétypes, les archétypes doivent être sur la bordure de l'enveloppe convexe.
+Dans l'algorithme, les archétypes sont placés aléatoirement dans l'enveloppe et les itérations suivantes déplacent les archétypes vers les extrémités afin de minimiser les distances. L'algorithme ne connait pas à priori la forme de la distribution des individus.
+Attention, ici, comme avec les k-means, les archétypes trouvés peuvent être un sous-optimum.
+
+On relie les archétypes entre eux par des segments. Les x sont projetés sur les segments entre les z. Les points à l'intérieur de l'enveloppe convexe sont une combinaison des 3 archétypes. Ceux à l'extérieur doivent être projeté. A la fin de la simulation, le "bruit" sont les individus qui ne sont pas dans l'enveloppe. Pour avoir un bruit égale à 0, il faudrait avoir le même nombre d'archétypes que le nombre de points sur l'enveloppe convexe. 
+
+```{r}
+# on veut 3 archétypes
+set.seed(1986)
+a <- archetypes(toy, 3,verbose = TRUE)
+#voici le nombre d'itération pour obtenir le plus petit RSS
+a
+```
+
+```{r}
+#les coordonnées des archétypes
+a$archetypes
+```
+
+```{r}
+
+ggplot() +
+  geom_point(data = a$archetypes, aes(x = x, y = y, color = "Archetypes"),size = 5) +
+  geom_point(data = toy,          aes(x = x, y = y, color = "Toy")) +
+  scale_color_manual(values = c("Archetypes" = "red", "Toy" = "black")) +
+  labs(color = "Jeu de données")
+```
+```{r}
+# Graphique
+ggplot() +
+  geom_point(data = a$archetypes, aes(x = x, y = y, color = "Archetypes"),size=5) +
+  geom_point(data = toy,          aes(x = x, y = y, color = "Toy")) +
+  geom_polygon(data = a$archetypes,  aes(x = x, y = y),
+               fill = "blue", alpha = 0.2, color = "blue") +
+  scale_color_manual(values = c("Archetypes" = "red", "Toy" = "black")) +
+  labs(color = "Jeu de données")
+```
+Pour la prochaine fois faire le graphique avec les points verts dans l'enveloppe convexe
+
+```{r}
+# on veut 15 archétypes
+set.seed(1986)
+b <- archetypes(toy, 15,verbose = TRUE)
+#voici le nombre d'itération pour obtenir le plus petit RSS
+b$archetypes
+```
+
