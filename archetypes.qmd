@@ -12,6 +12,8 @@ editor: visual
 
 # Les archetypes 
 
+## Archétypes physique
+
 ```{r}
 library(archetypes)
 library(ggplot2)
@@ -91,4 +93,221 @@ b <- archetypes(toy, 15,verbose = TRUE)
 #voici le nombre d'itération pour obtenir le plus petit RSS
 b$archetypes
 ```
+## Les Archétypes : les couleurs
 
+```{r}
+library(imager)
+library(tidyverse)
+```
+
+On charge l'image du tableau de Van Gogh 'La nuit étoilée'.
+On la tranforme en data frame. Chaque ligne représente un point et la valeur de couleur associé soit à R (1), soit à G (2), soit à B (3). On a donc 3 lignes par coordonnées. 
+En faisant un pivot wider on retrouve une ligne par coordonnées avec les valeurs des couleurs RGB dans 3 colonnes distinctes.
+
+```{r}
+img<-load.image('nuit_etoilée.jpeg')
+df <- as.data.frame(img)
+df_rgb <- df |> pivot_wider(names_from=cc, values_from = value)
+df_rgb <- df_rgb |> rename(R='1',G='2',B='3')
+```
+
+```{r}
+names(df_rgb)
+```
+Représentation en 3D d'un échantillon de 50 000 points issus du tableau avec en axe les valeurs des colonnes R, G et B.
+
+```{r}
+set.seed(123)
+df_sample <- df_rgb[sample(nrow(df_rgb), 50000), ]
+
+plot_ly(
+  data = df_sample,
+  x = ~R, y = ~G, z = ~B,
+  type = "scatter3d",
+  mode = "markers",
+  marker = list(
+    size = 2,
+    color = rgb(df_sample$R, df_sample$G, df_sample$B),
+    opacity = 0.5
+  )
+) %>%
+  layout(
+    scene = list(
+      xaxis = list(title = "R", range = c(0, 1)),
+      yaxis = list(title = "G", range = c(0, 1)),
+      zaxis = list(title = "B", range = c(0, 1))
+    ),
+    title = "50 000 points RGB — df_sample"
+  )
+```
+
+On choisit arbitrairement 3 archétypes :
+```{r}
+library(archetypes)
+```
+```{r}
+arch<-archetypes(df_sample[,3:5],3,verbose = TRUE)
+```
+Voici les coordonnées des 3 archétypes :
+```{r}
+arch$archetypes
+```
+
+```{r}
+
+arch_df <- as.data.frame(arch$archetypes)
+colnames(arch_df) <- c("R", "G", "B")
+
+plot_ly(
+  data = df_sample,
+  x = ~R, y = ~G, z = ~B,
+  type = "scatter3d",
+  mode = "markers",
+  marker = list(
+    size = 2,
+    color = rgb(df_sample$R, df_sample$G, df_sample$B),
+    opacity = 0.5
+  )
+) %>%
+  add_trace(
+    data = arch_df,
+    x = ~R, y = ~G, z = ~B,
+    type = "scatter3d",
+    mode = "markers",
+    marker = list(
+      size = 10,
+      color = rgb(arch_df$R, arch_df$G, arch_df$B),
+      opacity = 1
+    ),
+    name = "archétypes"
+  ) %>%
+  layout(
+    scene = list(
+      xaxis = list(title = "R", range = c(0, 1)),
+      yaxis = list(title = "G", range = c(0, 1)),
+      zaxis = list(title = "B", range = c(0, 1))
+    ),
+    title = "Distribution des couleurs de 50 000 points du tableau"
+  )
+```
+
+Déterminer le bon nombre d'archétypes :
+
+```{r}
+nb_arche <- stepArchetypes(df_sample[3:5], k=1:10, verbose = FALSE, nrep=1)
+```
+
+En appliquant le critère du coude on obtient le chiffre de 3
+```{r}
+screeplot(nb_arche)
+```
+Maintenant on veut revenir à une image avec ces 50 000 points. On veut aussi que les 50 000 points prennent des couleurs liées aux archétypes, cad projetées sur le triangle des archétypes.
+9a revient à résoudre une équation du style X=alpha*Z avec X la matrice des couleurs initiales, Z la matrice des archétypes
+
+```{r}
+Z=as.matrix(arch_df)
+Z
+```
+On veut l'inverse de la matrice Z
+```{r}
+inverse_Z=solve(Z)
+inverse_Z
+```
+
+```{r}
+X = as.matrix(df_sample[,3:5])
+```
+
+```{r}
+X %*% inverse_Z
+```
+
+Le résultat n'est pas bon mais on a une solution toute prete :
+
+```{r}
+alpha<-arch$alphas
+```
+
+```{r}
+X_proj <-alpha%*%Z
+X_proj <- as.data.frame(X_proj)
+```
+
+```{r}
+plot_ly(
+  data = X_proj,
+  x = ~R, y = ~G, z = ~B,
+  type = "scatter3d",
+  mode = "markers",
+  marker = list(
+    size = 2,
+    color = rgb(df_sample$R, df_sample$G, df_sample$B),
+    opacity = 0.5
+  )
+) %>%
+  add_trace(
+    data = arch_df,
+    x = ~R, y = ~G, z = ~B,
+    type = "scatter3d",
+    mode = "markers",
+    marker = list(
+      size = 10,
+      color = rgb(arch_df$R, arch_df$G, arch_df$B),
+      opacity = 1
+    ),
+    name = "archétypes"
+  ) %>%
+  layout(
+    scene = list(
+      xaxis = list(title = "R", range = c(0, 1)),
+      yaxis = list(title = "G", range = c(0, 1)),
+      zaxis = list(title = "B", range = c(0, 1))
+    ),
+    title = "Distribution des couleurs projetées de 50 000 points du tableau"
+  )
+```
+
+```{r}
+df_proj <- cbind(df_sample[,1:2],X_proj)
+```
+```{r}
+image_proj <- df_proj |> pivot_longer( cols = c("R","G","B"), names_to = "canal", values_to = "value") |> 
+  mutate(cc = match(canal, c("R","G","B"))) |>
+  select(x,y,cc,value)
+```
+
+```{r}
+image_proj <- as.cimg(image_proj)
+plot(image_proj)
+```
+On a peu de points du coup j'essaie avec 500 000 points
+
+```{r}
+#NE PAS RELANCER C'EST LONG
+set.seed(123)
+df_sample1 <- df_rgb[sample(nrow(df_rgb), 500000), ]
+arch1<-archetypes(df_sample1[,3:5],3,verbose = TRUE)
+```
+
+```{r}
+Z1=as.matrix(arch1$archetypes)
+X1 = as.matrix(df_sample1[,3:5])
+alpha1<-arch1$alphas
+X_proj1 <-alpha1%*%Z1
+X_proj1 <- as.data.frame(X_proj1)
+```
+
+```{r}
+df_proj1 <- cbind(df_sample1[,1:2],X_proj1)
+```
+
+```{r}
+image_proj1 <- df_proj1 |> pivot_longer( cols = c("R","G","B"), names_to = "canal", values_to = "value") |> 
+  mutate(cc = match(canal, c("R","G","B"))) |>
+  select(x,y,cc,value)
+```
+
+```{r}
+image_proj1 <- as.cimg(image_proj1)
+plot(image_proj1)
+```
