@@ -247,9 +247,6 @@ grid.arrange(graph1, graph2, nrow = 1)
 ```
 
 ```{r}
-cl
-
-cluster3$cluster
 
 table(tibble(cl, cluster3$cluster))
 
@@ -259,7 +256,45 @@ solve_correspondance = solve_LSAP(table(tibble(cl, cluster3$cluster)), maximum =
 
 conf_matrice = table(tibble(cl, cluster3$cluster))[, solve_correspondance]
 
+# le pourcentage de différence est de 7% entre les points simulés et le cluster 3
 1-sum(diag(conf_matrice))/600 # le taux de points mal placés
+```
+
+L'article aurait dû utiliser l'indice de Rand pour évaluer la concordance entre les données simulées et la répartition trouvées par k-means. 
+Explication du fonctionnement du Rand : on appelle la fonction rand.index de la library fossil
+
+Présentons l'indice dans un exemple simple. Supposons une classe avec 9 élèves, on veut comparer les 2 partitions suivantes :
+- Partition 1 :{A,B}, {C,D,E,F,G}, {H,I}
+- Partition 2 :{A}, {B}, {C,D,E}, {F,G}, {H,I}
+
+L'indice va compter le nombre de paires parmi les 36 qui sont soit dans un même groupe soit dans 2 groupes différents dans les 2 partitions.
+
+Dans cet exemple on trouve 80,6% de concordance.
+```{r}
+# L'indice de Rand avec la library fossil
+# on fait un essai 
+library(fossil)
+g1 <- c(1,1,rep(2,5),3,3)
+g2 <- c(1,2,3,3,3,4,4,5,5)
+
+rand.index(g1, g2)
+```
+
+Maintenant on applique à l'article. Le k-means avec k=3 donne une concordance de 90,1%.
+```{r}
+#Calcul de l'indice de Rand pour les points du cluster 3 avec les points similés.
+rand.index(cl,cluster3$cluster)
+```
+```{r}
+#Ici le pourcentage de différence est de 9%, 2 points de plus que dans l'article
+(1-rand.index(cl,cluster3$cluster))*100
+```
+
+Autre library :
+```{r}
+# L'indice de Rand avec la library mclust, c'est une autre library
+library(mclust)
+adjustedRandIndex(cl, cluster3$cluster)
 ```
 L'article aurait dû utiliser l'indice de Rand pour évaluer la concordance entre les données simulées et la répartition trouvée par kmeans(). Explicatoin du fonctionnement du Rand : L'indice de Rand est une mesure de similarité entre deux partitions d'un ensemble. Il est principalement utilisé en catégorisation automatique. Son principe est de mesurer la consistance (le taux d'accord) entre deux partitions.
 
@@ -369,6 +404,82 @@ circlize_dendrogram(hc,
 
 
 
+### La classification hiérarchique :
+
+Matrice des distances :
+```{r}
+dist(vars[,1:2],method = "euclidean")->distance
+```
+1ère étape : le couple avec la plus petite distance est regroupé ensemble. On calcul le point moyen de ce nouvel ensemble puis on refait une matrice de distance et on réagrège avec le point qui a la plus petite distance.
+L'algorithme a un point faible : s'il y a des distances égales il n'y a pas d'unicité des regroupements car l'algorithme va faire un choix.
+
+Essayons une représentation en dendrogramme avec 10 individus :
+```{r}
+cbind(X,cl)-> data_10
+data_10 |> as_tibble() |>arrange(cl) |> slice(1:3,178:181,598:600)-> data_10
+dist(data_10[,1:2],method = 'euclidean')->distance_10
+arbre_10 <- hclust(distance_10, method = "average")
+plot(arbre_10, main = "Dendrogramme")
+# ColorDendrogram(arbre_10, y = data_10$cl, main="Single Linkage", xlab = "", sub = "", cex = .75,labels=rownames(data_10))
+```
+Voici la représentation dans le plan des 10 points :
+```{r}
+
+data_10$cl <- as.factor(data_10$cl) 
+
+ggplot(data_10, aes(x = V1, y = V2, color = cl)) +  
+  geom_point(size = 2) +
+  geom_text(
+    aes(label = rownames(data_10)),  # ou une colonne id si tu préfères
+    nudge_x = 0.1, nudge_y = 0.2,
+    check_overlap = TRUE
+  )
+```
+
+
+
+Représentation en dendrogramme vertical de tous les points : 
+```{r}
+library(fastcluster)
+library(sparcl)
+arbre <- hclust(distance,method = 'average')
+#Produce the dendrogram
+plot(arbre,labels=FALSE)
+#Produce a coloured dendrogram
+ColorDendrogram(arbre, y = cl, main="Single Linkage", xlab = "", sub = "", cex = .75)
+arbrecut = cutree(arbre, k = 3)
+arbrecut4=cutree(arbre, k = 4)
+```
+Représentation en dendrogramme circulaire : 
+```{r}
+library(dendextend)
+library(circlize)
+
+# Hierarchical clustering dendrogram
+hc <- as.dendrogram(hclust(distance,method = 'average'))
+
+# Circular dendrogram facing inside
+circlize_dendrogram(hc,
+                    labels_track_height = NA,
+                    dend_track_height = 0.5,
+                    labels=FALSE) 
+```
+
+Rand index avec la classification hiérarchique :
+```{r}
+rand.index(cl,arbrecut)
+```
+
+Matrice de confusion :
+```{r}
+table(cl,arbrecut)
+```
+
+Maintenant si on coupe à 4 clusters:
+```{r}
+rand.index(cl,arbrecut4)
+```
+Comment couper un arbre pour maximiser le rand index ?
 
 ### kmeans - Lloyd
 
@@ -441,5 +552,32 @@ fviz_cluster(cluster3_lloyd,
              geom = "point", # "point" évite d'afficher le numéro de chaque ligne
              show.clust.cent = TRUE, # Affiche le centre des clusters (croix)
              main = "Représentation des clusters K-means")
+```
+
+### k-means Clustering Methods Based on Finite Mixture Models
+
+Expliquer le principe de cet algorithme : mélange de distributions gaussiennes. On ajoute jusqu'à 9 vecteurs. On regarde le maximum de vraisemblance à chaque ajout (BIC) et on choisi le nombre de gaussienne pour le BIC maximale.
+Expliquer le BIC : on veut maximiser le BIC.
+
+```{r}
+m1 = Mclust(vars[,1:2])
+```
+```{r}
+summary(m1)
+```
+
+```{r}
+plot(m1)
+```
+
+```{r}
+# matrice de confusion
+table(cl, m1$class)
+```
+```{r}
+m1$parameters
+# la première ligne c'est les tau
+# ensuite c'est les coordonnées des moyennes
+# puis c'est les variances
 ```
 
